@@ -1,43 +1,79 @@
 ---
 apiVersion: apps/v1
+
 kind: Deployment
 metadata:
-  name: slave
+  name: newjenkins
+  namespace: final-proj
 spec:
   selector:
     matchLabels:
-      app: slave
+      app: jenkins
   template:
     metadata:
       labels:
-        app: slave
-
+        app: jenkins
     spec:
-      containers:
-      - name: slave
-        image: mfadel8/slave1:final
-        imagePullPolicy: Never
-        ports:
-        - containerPort: 22
-        volumeMounts:
-        - mountPath: "/var/run/docker.sock"
-          name: host-mount
 
-      volumes:
-      - name: host-mount
-        hostPath:
-          path: "/var/run/docker.sock"
+      containers:
+        - name: jenkins
+          image: jenkins/jenkins:lts-jdk11
+          ports:
+            - name: http-port
+              containerPort: 8080
+            - name: jnlp-port
+              containerPort: 50000
+          resources:
+            limits:
+              memory: "2Gi"
+              cpu: "1000m"
+            requests:
+              memory: "100Mi"
+              cpu: "100m"
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: jenkins-pv
+  namespace: final-proj
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /tmp
+
+
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: jenkins-pvc
+  namespace: final-proj
+spec:
+  resources:
+    requests:
+      storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+
+
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: jenkins-slave-service
+  name: jenkins-node-service
+  namespace: final-proj
 spec:
-  # type: LoadBalancer
-  selector: 
-    app: slave
+  type: LoadBalancer
+  selector:
+    app: jenkins
   ports:
-    - protocol: TCP
-      port: 22
-      targetPort: 22
+  - port: 8080
+    targetPort: 8080

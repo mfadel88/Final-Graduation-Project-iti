@@ -1,10 +1,10 @@
-
 ---
 apiVersion: apps/v1
 
 kind: Deployment
 metadata:
   name: newjenkins
+  namespace: final-proj
 spec:
   selector:
     matchLabels:
@@ -35,6 +35,7 @@ apiVersion: v1
 kind: PersistentVolume
 metadata:
   name: jenkins-pv
+  namespace: final-proj
   labels:
     type: local
 spec:
@@ -53,6 +54,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: jenkins-pvc
+  namespace: final-proj
 spec:
   resources:
     requests:
@@ -67,6 +69,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: jenkins-node-service
+  namespace: final-proj
 spec:
   type: LoadBalancer
   selector:
