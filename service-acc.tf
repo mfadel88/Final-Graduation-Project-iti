@@ -6,7 +6,9 @@ resource "google_service_account" "final-service-acc" {
 
 resource "google_project_iam_binding" "project" {
   project = "final-proj-fadel"
-  role    = "roles/storage.admin"
+  role    = "roles/contianer.admin"
+
+  
 
   members = [
     "serviceAccount:${google_service_account.final-service-acc.email}",
