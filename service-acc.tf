@@ -6,7 +6,7 @@ resource "google_service_account" "final-service-acc" {
 
 resource "google_project_iam_binding" "project" {
   project = "final-proj-fadel"
-  role    = "roles/contianer.admin"
+  role    = "roles/container.admin"
 
   
 
